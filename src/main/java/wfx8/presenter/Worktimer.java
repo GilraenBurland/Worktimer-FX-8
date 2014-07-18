@@ -25,7 +25,7 @@ public final class Worktimer implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent event) {
         calculateCurrentRemainingTime();
-        setCurrentRemainingTimeToModelAndGUI();
+        setCurrentRemainingTimeInGUI();
     }
 
     private void calculateCurrentRemainingTime() {
@@ -33,8 +33,8 @@ public final class Worktimer implements EventHandler<ActionEvent> {
         Duration remainingDuration = Duration.between(LocalTime.now(), endTime);
         currentRemainingTime = (LocalTime) remainingDuration.addTo(LocalTime.of(0, 0, 0));
     }
-    
-    private void setCurrentRemainingTimeToModelAndGUI() {
-        Platform.runLater(() -> remainingTimeLabel.setText(DateTimeUtil.formatRemainingTime(currentRemainingTime))); 
+
+    private void setCurrentRemainingTimeInGUI() {
+        Platform.runLater(() -> remainingTimeLabel.setText(DateTimeUtil.formatRemainingTime(currentRemainingTime)));
     }
 }

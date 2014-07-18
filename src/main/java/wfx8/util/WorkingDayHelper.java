@@ -26,10 +26,12 @@ public final class WorkingDayHelper {
 
             ZonedDateTime now = ZonedDateTime.now();
             if (now.getDayOfMonth() > workingDay.getStartTime().getDayOfMonth()) {
-                workingDay = createAndSaveNewWorkingDay();
+                workingDay = createNewWorkingDay();
+                tryWriteWorkingDay(workingDayFile, workingDay);
             }
         } catch (ReadWriteException e) {
-            workingDay = createAndSaveNewWorkingDay();
+            workingDay = createNewWorkingDay();
+            serialize(workingDay);
         }
 
         return workingDay;
@@ -61,11 +63,10 @@ public final class WorkingDayHelper {
         return properties;
     }
 
-    private static WorkingDay createAndSaveNewWorkingDay() throws ReadWriteException {
+    private static WorkingDay createNewWorkingDay() throws ReadWriteException {
         ZonedDateTime startTime = ZonedDateTime.now();
         LocalTime endTime = LocalTime.now().plus(8, ChronoUnit.HOURS).plus(21, ChronoUnit.MINUTES);
         WorkingDay workingDay = new WorkingDay(startTime, endTime);
-        serialize(workingDay);
         return workingDay;
     }
 

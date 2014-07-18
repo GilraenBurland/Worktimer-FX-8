@@ -13,11 +13,11 @@ import wfx8.util.ReadWriteException;
 import wfx8.util.WorkingDayHelper;
 import wfx8.util.WorktimerConfigHelper;
 
-public final class OnCloseHandler implements EventHandler<WindowEvent>{
-    
+public final class OnCloseHandler implements EventHandler<WindowEvent> {
+
     private final WorktimerPresenter presenter;
-    private final Stage primaryStage;
-    
+    private final Stage              primaryStage;
+
     public OnCloseHandler(WorktimerPresenter presenter, Stage primaryStage) {
         this.presenter = presenter;
         this.primaryStage = primaryStage;

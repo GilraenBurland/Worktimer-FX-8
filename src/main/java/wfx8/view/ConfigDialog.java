@@ -21,7 +21,7 @@ import org.controlsfx.dialog.Dialogs;
 
 import wfx8.model.WorkingDay;
 
-public class ConfigDialog extends Stage implements Initializable {
+public final class ConfigDialog extends Stage implements Initializable {
 
     @FXML
     private Accordion        accordion;
@@ -30,15 +30,20 @@ public class ConfigDialog extends Stage implements Initializable {
 
     public ConfigDialog(WorkingDay workingDay) {
         this.workingDay = workingDay;
-
         setTitle("Config Dialog");
+        setMinHeight(200);
+        loadStageContent();
+    }
 
+    private void loadStageContent() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ConfigDialog.fxml"));
         fxmlLoader.setController(this);
+        trySetSceneFrom(fxmlLoader);
+    }
 
+    private void trySetSceneFrom(FXMLLoader fxmlLoader) {
         try {
             setScene(new Scene((Parent) fxmlLoader.load()));
-            setMinHeight(200);
         } catch (IOException e) {
             e.printStackTrace();
             Dialogs.create().title("Error").message("Failed to open Config Dialog.").showException(e);
@@ -56,23 +61,39 @@ public class ConfigDialog extends Stage implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        expandFirstTitledPane();
+        initializeStartTime();
+        initializeEndTime();
+        calculateAndSetDailyOffset();
+    }
+
+    private void expandFirstTitledPane() {
         accordion.setExpandedPane(accordion.getPanes().get(0));
+    }
 
-        startTime.withLocalTime(LocalTime
-                .of(workingDay.getStartTime().getHour(), workingDay.getStartTime().getMinute()));
-        startTime.localTimeProperty().addListener((observable, oldValue, newValue) -> {
-            ZonedDateTime newStartTime = workingDay.getStartTime().with(newValue);
-            workingDay.startTimeProperty().set(newStartTime);
-            calculateAndSetEndTime();
-            calculateAndSetDailyOffset();
-        });
+    private void initializeStartTime() {
+        LocalTime currentStartTime = LocalTime.of(workingDay.getStartTime().getHour(), workingDay.getStartTime()
+                                                                                                 .getMinute());
+        startTime.withLocalTime(currentStartTime);
+        startTime.localTimeProperty()
+                 .addListener((observable, oldValue, newValue) -> doHandleStartTimeChangedEvent(newValue));
+    }
 
+    private void doHandleStartTimeChangedEvent(LocalTime newValue) {
+        ZonedDateTime newStartTime = workingDay.getStartTime().with(newValue);
+        workingDay.setStartTime(newStartTime);
+        calculateAndSetEndTime();
+        calculateAndSetDailyOffset();
+    }
+
+    private void initializeEndTime() {
         endTime.withLocalTime(workingDay.getEndTime());
-        endTime.localTimeProperty().addListener((observable, oldValue, newValue) -> {
-            workingDay.endTimeProperty().set(newValue);
-            calculateAndSetDailyOffset();
-        });
+        endTime.localTimeProperty()
+               .addListener((observable, oldValue, newValue) -> doHandleEndTimeChangedEvent(newValue));
+    }
 
+    private void doHandleEndTimeChangedEvent(LocalTime newValue) {
+        workingDay.setEndTime(newValue);
         calculateAndSetDailyOffset();
     }
 
@@ -83,13 +104,19 @@ public class ConfigDialog extends Stage implements Initializable {
     private void calculateAndSetDailyOffset() {
         LocalTime standardEndTime = getStandardEndTime();
         LocalTime workingDayEndTime = workingDay.getEndTime();
-        
-        int hourOffset = workingDayEndTime.getHour() - standardEndTime.getHour();
-        int minuteOffset = workingDayEndTime.getMinute() - standardEndTime.getMinute();
-        
-        String newDailyOffset = Math.abs(hourOffset) + ":" + Math.abs(minuteOffset);
-        
-        if(workingDayEndTime.isBefore(standardEndTime)) {
+        String newDailyOffset = generateDailyOffsetString(standardEndTime, workingDayEndTime);
+        updateDailyOffsetWith(standardEndTime, workingDayEndTime, newDailyOffset);
+    }
+
+    private static String generateDailyOffsetString(LocalTime standardEndTime, LocalTime workingDayEndTime) {
+        int hourOffset = Math.abs(workingDayEndTime.getHour() - standardEndTime.getHour());
+        int minuteOffset = Math.abs(workingDayEndTime.getMinute() - standardEndTime.getMinute());
+        String newDailyOffset = hourOffset + ":" + minuteOffset;
+        return newDailyOffset;
+    }
+
+    private void updateDailyOffsetWith(LocalTime standardEndTime, LocalTime workingDayEndTime, String newDailyOffset) {
+        if (workingDayEndTime.isBefore(standardEndTime)) {
             dailyOffsetLabel.setText('-' + newDailyOffset);
         } else {
             dailyOffsetLabel.setText(newDailyOffset);

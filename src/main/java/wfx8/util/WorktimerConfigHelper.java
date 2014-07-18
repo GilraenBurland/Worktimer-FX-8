@@ -15,37 +15,38 @@ import wfx8.model.WorktimerConfig;
 
 public final class WorktimerConfigHelper {
 
-    private WorktimerConfigHelper() {}
-    
+    private WorktimerConfigHelper() {
+    }
+
     private static WorktimerConfig currentConfig;
-    
+
     public static WorktimerConfig getCurrentConfig() throws ReadWriteException {
-        if(currentConfig == null) {
+        if (currentConfig == null) {
             File worktimerConfigFile = getConfigFile();
             Properties configProperties = readPropertiesFrom(worktimerConfigFile);
-            
+
             currentConfig = new WorktimerConfig();
             currentConfig.stageX = Double.valueOf((String) configProperties.get("stageX"));
             currentConfig.stageY = Double.valueOf((String) configProperties.get("stageY"));
         }
         return currentConfig;
     }
-    
+
     private static File getConfigFile() throws ReadWriteException {
         File worktimerDirectory = getWorktimerDirectory();
         File configFile = new File(worktimerDirectory, "Config.wfx8");
-        
-        if(!configFile.exists()) {
+
+        if (!configFile.exists()) {
             createDefaultsIn(configFile);
         }
-        
+
         return configFile;
     }
-    
+
     private static void createDefaultsIn(File configFile) throws ReadWriteException {
         try {
             FileWriter fileWriter = new FileWriter(configFile);
-            
+
             try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
                 bufferedWriter.append("stageX=0.0");
                 bufferedWriter.newLine();
@@ -67,7 +68,7 @@ public final class WorktimerConfigHelper {
 
         return worktimerDirectory;
     }
-    
+
     private static Properties readPropertiesFrom(File file) throws ReadWriteException {
         Properties properties = new Properties();
 
@@ -86,38 +87,38 @@ public final class WorktimerConfigHelper {
 
         return properties;
     }
-    
+
     public static void saveConfig(WorktimerConfig config) throws Exception {
         Properties configProperties = convertToProperties(config);
         try {
             FileWriter fileWriter = new FileWriter(getConfigFile());
             try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
                 Iterator<Entry<Object, Object>> it = configProperties.entrySet().iterator();
-                
-                while(it.hasNext()) {
+
+                while (it.hasNext()) {
                     Entry<Object, Object> entry = it.next();
-                    
+
                     bufferedWriter.append(entry.getKey() + "=" + entry.getValue());
-                    
-                    if(it.hasNext()) {
+
+                    if (it.hasNext()) {
                         bufferedWriter.newLine();
                     }
                 }
             }
         } catch (Throwable e) {
             throw new ReadWriteException(e.getMessage());
-        } 
+        }
     }
-    
+
     private static final Properties convertToProperties(WorktimerConfig config) throws Exception {
         Properties properties = new Properties();
-        
+
         Field[] fields = WorktimerConfig.class.getFields();
-        
-        for(Field field : fields) {
+
+        for (Field field : fields) {
             writePropertyFrom(field, config, properties);
         }
-        
+
         return properties;
     }
 
