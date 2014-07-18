@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/controlsfx-8.0.6.jar"/>
+	<classpathentry kind="lib" path="libs/jfxtras-controls-8.0-r1.jar"/>
+	<classpathentry kind="lib" path="libs/jfxtras-agenda-8.0-r1.jar"/>
+	<classpathentry kind="lib" path="libs/jfxtras-common-8.0-r1.jar"/>
+	<classpathentry kind="lib" path="libs/jfxtras-fxml-8.0-r1.jar"/>
+	<classpathentry kind="lib" path="libs/jfxtras-labs-8.0-r1.jar"/>
+	<classpathentry kind="lib" path="libs/jfxtras-window-8.0-r1.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

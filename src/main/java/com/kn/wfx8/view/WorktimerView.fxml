@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kn.wfx8.presenter.WorktimerPresenter">
+   <children>
+      <HBox>
+         <children>
+            <MenuBar HBox.hgrow="ALWAYS">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#openConfigDialog" text="Config" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <MenuBar HBox.hgrow="NEVER">
+               <menus>
+                  <Menu disable="true" mnemonicParsing="false" text="Version: 0.5" />
+               </menus>
+               <padding>
+                  <Insets right="-3.0" />
+               </padding>
+            </MenuBar>
+         </children>
+         <padding>
+            <Insets bottom="5.0" />
+         </padding>
+      </HBox>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints minWidth="60.0" prefWidth="125.0" />
+            <ColumnConstraints minWidth="67.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+         <children>
+            <HBox maxHeight="15.0" minHeight="15.0" prefHeight="15.0" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <children>
+                  <Label text="Start Time:">
+                     <font>
+                        <Font name="Verdana" size="10.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="startTimeLabel" text="12:00">
+                     <font>
+                        <Font name="Verdana" size="10.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </HBox>
+            <HBox maxHeight="15.0" minHeight="15.0" prefHeight="15.0" spacing="5.0" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+               <children>
+                  <Label text="End Time:">
+                     <font>
+                        <Font name="Verdana" size="10.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="endTimeLabel" text="12:00">
+                     <font>
+                        <Font name="Verdana" size="10.0" />
+                     </font>
+                  </Label>
+               </children>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </HBox>
+            <Separator GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </Separator>
+            <Label text="Remaining:" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Verdana" size="18.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </Label>
+            <Label fx:id="remainingTimeLabel" text="08:06:43" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Verdana Bold" size="18.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</VBox>
