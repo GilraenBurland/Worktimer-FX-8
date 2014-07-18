@@ -1,17 +1,16 @@
-package com.kn.wfx8.presenter;
+package wfx8.presenter;
 
+import wfx8.model.WorkingDay;
+import wfx8.util.DateTimeUtil;
+import wfx8.util.ReadWriteException;
+import wfx8.util.WorkingDayHelper;
+import wfx8.view.ConfigDialog;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-
-import com.kn.wfx8.model.WorkingDay;
-import com.kn.wfx8.util.DateTimeUtil;
-import com.kn.wfx8.util.ReadWriteException;
-import com.kn.wfx8.util.WorkingDayHelper;
-import com.kn.wfx8.view.ConfigDialog;
 
 public class WorktimerPresenter {
 

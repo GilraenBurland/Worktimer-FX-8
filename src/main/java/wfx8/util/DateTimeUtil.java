@@ -1,4 +1,4 @@
-package com.kn.wfx8.util;
+package wfx8.util;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;

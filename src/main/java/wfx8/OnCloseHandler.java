@@ -1,4 +1,4 @@
-package com.kn.wfx8;
+package wfx8;
 
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
@@ -6,12 +6,12 @@ import javafx.stage.WindowEvent;
 
 import org.controlsfx.dialog.Dialogs;
 
-import com.kn.wfx8.model.WorkingDay;
-import com.kn.wfx8.model.WorktimerConfig;
-import com.kn.wfx8.presenter.WorktimerPresenter;
-import com.kn.wfx8.util.ReadWriteException;
-import com.kn.wfx8.util.WorkingDayHelper;
-import com.kn.wfx8.util.WorktimerConfigHelper;
+import wfx8.model.WorkingDay;
+import wfx8.model.WorktimerConfig;
+import wfx8.presenter.WorktimerPresenter;
+import wfx8.util.ReadWriteException;
+import wfx8.util.WorkingDayHelper;
+import wfx8.util.WorktimerConfigHelper;
 
 public final class OnCloseHandler implements EventHandler<WindowEvent>{
     

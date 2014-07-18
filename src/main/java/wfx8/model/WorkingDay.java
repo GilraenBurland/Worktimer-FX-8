@@ -1,4 +1,4 @@
-package com.kn.wfx8.model;
+package wfx8.model;
 
 import java.time.LocalTime;
 import java.time.ZonedDateTime;

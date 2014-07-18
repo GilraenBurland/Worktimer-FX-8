@@ -1,4 +1,4 @@
-package com.kn.wfx8.util;
+package wfx8.util;
 
 public class ReadWriteException extends Exception {
 

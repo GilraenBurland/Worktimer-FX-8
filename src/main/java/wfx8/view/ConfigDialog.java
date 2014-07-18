@@ -1,4 +1,4 @@
-package com.kn.wfx8.view;
+package wfx8.view;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,7 +19,7 @@ import jfxtras.scene.control.LocalTimePicker;
 
 import org.controlsfx.dialog.Dialogs;
 
-import com.kn.wfx8.model.WorkingDay;
+import wfx8.model.WorkingDay;
 
 public class ConfigDialog extends Stage implements Initializable {
 

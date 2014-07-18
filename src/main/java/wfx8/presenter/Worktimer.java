@@ -1,15 +1,14 @@
-package com.kn.wfx8.presenter;
+package wfx8.presenter;
 
 import java.time.Duration;
 import java.time.LocalTime;
 
+import wfx8.model.WorkingDay;
+import wfx8.util.DateTimeUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
-
-import com.kn.wfx8.model.WorkingDay;
-import com.kn.wfx8.util.DateTimeUtil;
 
 public final class Worktimer implements EventHandler<ActionEvent> {
 

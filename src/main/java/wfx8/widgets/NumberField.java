@@ -1,4 +1,4 @@
-package com.kn.wfx8.widgets;
+package wfx8.widgets;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

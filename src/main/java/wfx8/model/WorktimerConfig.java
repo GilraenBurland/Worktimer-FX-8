@@ -1,4 +1,4 @@
-package com.kn.wfx8.model;
+package wfx8.model;
 
 
 public final class WorktimerConfig {

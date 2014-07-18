@@ -1,14 +1,13 @@
-package com.kn.wfx8;
+package wfx8;
 
+import wfx8.presenter.WorktimerPresenter;
+import wfx8.util.PrimaryStageHelper;
+import wfx8.util.ReadWriteException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import com.kn.wfx8.presenter.WorktimerPresenter;
-import com.kn.wfx8.util.PrimaryStageHelper;
-import com.kn.wfx8.util.ReadWriteException;
 
 public class WorktimerFX8 extends Application {
     

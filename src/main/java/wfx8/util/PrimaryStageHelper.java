@@ -1,8 +1,7 @@
-package com.kn.wfx8.util;
+package wfx8.util;
 
+import wfx8.model.WorktimerConfig;
 import javafx.stage.Stage;
-
-import com.kn.wfx8.model.WorktimerConfig;
 
 public final class PrimaryStageHelper {
 

@@ -1,4 +1,4 @@
-package com.kn.wfx8.util;
+package wfx8.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
-import com.kn.wfx8.model.WorkingDay;
+import wfx8.model.WorkingDay;
 
 public final class WorkingDayHelper {
 
