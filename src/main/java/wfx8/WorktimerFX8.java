@@ -1,13 +1,15 @@
 package wfx8;
 
-import wfx8.presenter.WorktimerPresenter;
-import wfx8.util.PrimaryStageHelper;
-import wfx8.util.ReadWriteException;
+import java.net.URL;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import wfx8.presenter.WorktimerPresenter;
+import wfx8.util.PrimaryStageHelper;
+import wfx8.util.ReadWriteException;
 
 public class WorktimerFX8 extends Application {
     
@@ -25,7 +27,8 @@ public class WorktimerFX8 extends Application {
     private void showWorktimerView() throws ReadWriteException {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(WorktimerFX8.class.getResource("view/WorktimerView.fxml"));
+            URL worktimerViewUrl = getClass().getResource("view/WorktimerView.fxml"); 
+            loader.setLocation(worktimerViewUrl);
             VBox worktimerView = loader.load();
             primaryStage.setScene(new Scene(worktimerView));
             
