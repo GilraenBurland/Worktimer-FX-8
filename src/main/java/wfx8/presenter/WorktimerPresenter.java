@@ -73,7 +73,7 @@ public final class WorktimerPresenter {
     }
 
     // Implement handlerMethods
-    public void openConfigDialog() {
+    public void openConfigDialog() throws ReadWriteException {
         ConfigDialog dialog = new ConfigDialog(workingDay);
         dialog.showAndWait();
     }

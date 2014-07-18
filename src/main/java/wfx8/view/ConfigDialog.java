@@ -20,6 +20,9 @@ import jfxtras.scene.control.LocalTimePicker;
 import org.controlsfx.dialog.Dialogs;
 
 import wfx8.model.WorkingDay;
+import wfx8.model.WorktimerConfig;
+import wfx8.util.ReadWriteException;
+import wfx8.util.WorktimerConfigHelper;
 
 public final class ConfigDialog extends Stage implements Initializable {
 
@@ -28,11 +31,22 @@ public final class ConfigDialog extends Stage implements Initializable {
 
     private final WorkingDay workingDay;
 
-    public ConfigDialog(WorkingDay workingDay) {
+    public ConfigDialog(WorkingDay workingDay) throws ReadWriteException {
         this.workingDay = workingDay;
+        configureDialog();
+        loadStageContent();
+    }
+
+    private void configureDialog() throws ReadWriteException {
         setTitle("Config Dialog");
         setMinHeight(200);
-        loadStageContent();
+        setPosition();
+    }
+    
+    private void setPosition() throws ReadWriteException {
+        WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
+        setX(config.stageX);
+        setY(config.stageY + 120);
     }
 
     private void loadStageContent() {
