@@ -9,7 +9,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import wfx8.model.WorktimerConfig;
 import wfx8.presenter.WorktimerPresenter;
-import wfx8.util.ReadWriteException;
 import wfx8.util.WorktimerConfigHelper;
 
 public final class WorktimerFX8 extends Application {
@@ -36,7 +35,7 @@ public final class WorktimerFX8 extends Application {
         primaryStage.yProperty().addListener((observable, oldValue, newValue) -> saveCurrentStageCoordinates());
     }
 
-    private void showWorktimerView() throws ReadWriteException {
+    private void showWorktimerView() {
         try {
             FXMLLoader loader = new FXMLLoader();
             URL worktimerViewUrl = getClass().getResource("view/WorktimerView.fxml");
@@ -49,7 +48,7 @@ public final class WorktimerFX8 extends Application {
 
             presenter.go(primaryStage);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
     
