@@ -76,6 +76,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>Worktimer-FX-8</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

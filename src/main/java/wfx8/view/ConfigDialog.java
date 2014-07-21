@@ -125,17 +125,9 @@ public final class ConfigDialog extends Stage implements Initializable {
 
     private static String generateDailyOffsetString(LocalTime standardEndTime, LocalTime workingDayEndTime) {
         Duration dailyOffset = Duration.between(standardEndTime, workingDayEndTime).abs();
-        long offsetHours = getHoursOf(dailyOffset);
-        long offsetMinutes = getRemainingMinutesOf(dailyOffset, offsetHours);
+        long offsetHours = dailyOffset.toHours();
+        long offsetMinutes = dailyOffset.toMinutes() - (offsetHours * 60);
         return offsetHours + ":" + offsetMinutes;
-    }
-
-    private static long getRemainingMinutesOf(Duration dailyOffset, long offsetHours) {
-        return dailyOffset.getSeconds() / 60 - (offsetHours * 60);
-    }
-
-    private static long getHoursOf(Duration dailyOffset) {
-        return dailyOffset.getSeconds() / 3600;
     }
 
     private void updateDailyOffsetWith(LocalTime standardEndTime, LocalTime workingDayEndTime, String newDailyOffset) {
