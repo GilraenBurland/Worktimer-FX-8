@@ -2,6 +2,7 @@ package wfx8.view;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -123,10 +124,18 @@ public final class ConfigDialog extends Stage implements Initializable {
     }
 
     private static String generateDailyOffsetString(LocalTime standardEndTime, LocalTime workingDayEndTime) {
-        int hourOffset = Math.abs(workingDayEndTime.getHour() - standardEndTime.getHour());
-        int minuteOffset = Math.abs(workingDayEndTime.getMinute() - standardEndTime.getMinute());
-        String newDailyOffset = hourOffset + ":" + minuteOffset;
-        return newDailyOffset;
+        Duration dailyOffset = Duration.between(standardEndTime, workingDayEndTime).abs();
+        long offsetHours = getHoursOf(dailyOffset);
+        long offsetMinutes = getRemainingMinutesOf(dailyOffset, offsetHours);
+        return offsetHours + ":" + offsetMinutes;
+    }
+
+    private static long getRemainingMinutesOf(Duration dailyOffset, long offsetHours) {
+        return dailyOffset.getSeconds() / 60 - (offsetHours * 60);
+    }
+
+    private static long getHoursOf(Duration dailyOffset) {
+        return dailyOffset.getSeconds() / 3600;
     }
 
     private void updateDailyOffsetWith(LocalTime standardEndTime, LocalTime workingDayEndTime, String newDailyOffset) {
