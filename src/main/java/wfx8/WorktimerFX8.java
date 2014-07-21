@@ -20,8 +20,8 @@ public final class WorktimerFX8 extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Worktimer FX 8");
-
         setStageCoordinates();
+        addStageCoordinatesListener();
         showWorktimerView();
     }
 
@@ -29,6 +29,11 @@ public final class WorktimerFX8 extends Application {
         WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
         primaryStage.setX(config.stageX);
         primaryStage.setY(config.stageY);
+    }
+    
+    private void addStageCoordinatesListener() {
+        primaryStage.xProperty().addListener((observable, oldValue, newValue) -> saveCurrentStageCoordinates());
+        primaryStage.yProperty().addListener((observable, oldValue, newValue) -> saveCurrentStageCoordinates());
     }
 
     private void showWorktimerView() throws ReadWriteException {
@@ -45,6 +50,17 @@ public final class WorktimerFX8 extends Application {
             presenter.go(primaryStage);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    private void saveCurrentStageCoordinates() {
+        try {
+            WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
+            config.stageX = primaryStage.getX();
+            config.stageY = primaryStage.getY();
+            WorktimerConfigHelper.saveConfig(config);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
