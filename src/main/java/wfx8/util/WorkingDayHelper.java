@@ -1,5 +1,8 @@
 package wfx8.util;
 
+import wfx8.model.GeneralConfig;
+import wfx8.model.WorkingDay;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,10 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Properties;
-
-import wfx8.model.WorkingDay;
 
 public final class WorkingDayHelper {
 
@@ -19,7 +19,7 @@ public final class WorkingDayHelper {
     }
 
     public static WorkingDay loadWorkingDay() throws ReadWriteException {
-        WorkingDay workingDay = null;
+        WorkingDay workingDay;
         try {
             File workingDayFile = getWorkingDayFile();
             workingDay = createWorkingDayFrom(workingDayFile);
@@ -50,7 +50,7 @@ public final class WorkingDayHelper {
         try {
             FileReader fileReader = new FileReader(file);
             try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-                String line = null;
+                String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] property = line.split("=");
                     properties.put(property[0], property[1]);
@@ -64,10 +64,10 @@ public final class WorkingDayHelper {
     }
 
     private static WorkingDay createNewWorkingDay() throws ReadWriteException {
-        ZonedDateTime startTime = ZonedDateTime.now();
-        LocalTime endTime = LocalTime.now().plus(8, ChronoUnit.HOURS).plus(21, ChronoUnit.MINUTES);
-        WorkingDay workingDay = new WorkingDay(startTime, endTime);
-        return workingDay;
+        GeneralConfig generalConfig = WorktimerConfigHelper.getCurrentConfig().generalConfig;
+        ZonedDateTime startTime = ZonedDateTime.now().plus(generalConfig.startTimeOffset);
+        LocalTime endTime = startTime.toLocalTime().plus(generalConfig.workingTime).plus(generalConfig.breakTime);
+        return new WorkingDay(startTime, endTime);
     }
 
     public static void serialize(WorkingDay workingDay) throws ReadWriteException {
@@ -77,8 +77,7 @@ public final class WorkingDayHelper {
 
     private static File getWorkingDayFile() throws ReadWriteException {
         File worktimerDirectory = getWorktimerDirectory();
-        File workingDayFile = new File(worktimerDirectory, "WorkingDay.wfx8");
-        return workingDayFile;
+        return new File(worktimerDirectory, "WorkingDay.wfx8");
     }
 
     private static File getWorktimerDirectory() throws ReadWriteException {
@@ -105,9 +104,9 @@ public final class WorkingDayHelper {
         FileWriter fileWriter = new FileWriter(workingDayFile);
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-            bufferedWriter.append("startTime=" + workingDay.getStartTime().toString());
+            bufferedWriter.append("startTime=").append(workingDay.getStartTime().toString());
             bufferedWriter.newLine();
-            bufferedWriter.append("endTime=" + workingDay.getEndTime().toString());
+            bufferedWriter.append("endTime=").append(workingDay.getEndTime().toString());
         }
     }
 

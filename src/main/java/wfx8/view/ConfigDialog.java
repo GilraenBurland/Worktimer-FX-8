@@ -19,13 +19,12 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
 public final class ConfigDialog extends Stage implements Initializable {
 
     @FXML
-    private Accordion        accordion;
+    private Accordion accordion;
 
     private final WorkingDay workingDay;
 
@@ -44,7 +43,7 @@ public final class ConfigDialog extends Stage implements Initializable {
         setMinHeight(200);
         setPosition();
     }
-    
+
     private void setPosition() throws ReadWriteException {
         setX(config.stageConfig.x);
         setY(config.stageConfig.y + 120);
@@ -72,7 +71,7 @@ public final class ConfigDialog extends Stage implements Initializable {
     private LocalTimePicker endTime;
 
     @FXML
-    private Label           dailyOffsetLabel;
+    private Label dailyOffsetLabel;
 
     @FXML
     private LocalTimePicker startTimeOffset;
@@ -109,7 +108,7 @@ public final class ConfigDialog extends Stage implements Initializable {
     private void doHandleStartTimeChangedEvent(LocalTime newValue) {
         ZonedDateTime newStartTime = workingDay.getStartTime().with(newValue);
         workingDay.setStartTime(newStartTime);
-        calculateAndSetEndTime();
+        calculateAndSetStandardEndTime();
         calculateAndSetDailyOffset();
     }
 
@@ -124,15 +123,23 @@ public final class ConfigDialog extends Stage implements Initializable {
         calculateAndSetDailyOffset();
     }
 
-    private void calculateAndSetEndTime() {
-        endTime.setLocalTime(getStandardEndTime());
+    private void calculateAndSetStandardEndTime() {
+        LocalTime newEndTime = calculateStandardEndTime();
+        endTime.setLocalTime(newEndTime);
     }
 
     private void calculateAndSetDailyOffset() {
-        LocalTime standardEndTime = getStandardEndTime();
+        LocalTime standardEndTime = calculateStandardEndTime();
         LocalTime workingDayEndTime = workingDay.getEndTime();
         String newDailyOffset = generateDailyOffsetString(standardEndTime, workingDayEndTime);
         updateDailyOffsetWith(standardEndTime, workingDayEndTime, newDailyOffset);
+    }
+
+    private LocalTime calculateStandardEndTime() {
+        return workingDay.getStartTime()
+                         .toLocalTime()
+                         .plus(config.generalConfig.workingTime)
+                         .plus(config.generalConfig.breakTime);
     }
 
     private static String generateDailyOffsetString(LocalTime standardEndTime, LocalTime workingDayEndTime) {
@@ -150,14 +157,10 @@ public final class ConfigDialog extends Stage implements Initializable {
         }
     }
 
-    private LocalTime getStandardEndTime() {
-        return workingDay.getStartTime().toLocalTime().plus(8, ChronoUnit.HOURS).plus(21, ChronoUnit.MINUTES);
-    }
-
     private void initializeStartTimeOffset() {
         startTimeOffset.withLocalTime(LocalTime.MIN.plus(config.generalConfig.startTimeOffset));
         startTimeOffset.localTimeProperty()
-               .addListener((observable, oldValue, newValue) -> doHandleStartTimeOffsetChangedEvent(newValue));
+                       .addListener((observable, oldValue, newValue) -> doHandleStartTimeOffsetChangedEvent(newValue));
     }
 
     private void doHandleStartTimeOffsetChangedEvent(LocalTime newValue) {
@@ -167,21 +170,23 @@ public final class ConfigDialog extends Stage implements Initializable {
     private void initializeWorkingTime() {
         workingTime.withLocalTime(LocalTime.MIN.plus(config.generalConfig.workingTime));
         workingTime.localTimeProperty()
-                       .addListener((observable, oldValue, newValue) -> doHandleWorkingTimeChangedEvent(newValue));
+                   .addListener((observable, oldValue, newValue) -> doHandleWorkingTimeChangedEvent(newValue));
     }
 
     private void doHandleWorkingTimeChangedEvent(LocalTime newValue) {
         config.generalConfig.workingTime = Duration.between(LocalTime.MIN, newValue);
+        calculateAndSetStandardEndTime();
     }
 
     private void initializeBreakTime() {
         breakTime.withLocalTime(LocalTime.MIN.plus(config.generalConfig.breakTime));
         breakTime.localTimeProperty()
-                   .addListener((observable, oldValue, newValue) -> doHandleBreakTimeChangedEvent(newValue));
+                 .addListener((observable, oldValue, newValue) -> doHandleBreakTimeChangedEvent(newValue));
     }
 
     private void doHandleBreakTimeChangedEvent(LocalTime newValue) {
         config.generalConfig.breakTime = Duration.between(LocalTime.MIN, newValue);
+        calculateAndSetStandardEndTime();
     }
 
 }
