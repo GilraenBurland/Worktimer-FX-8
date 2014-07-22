@@ -1,13 +1,5 @@
 package wfx8.view;
 
-import java.io.IOException;
-import java.net.URL;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,13 +9,19 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import jfxtras.scene.control.LocalTimePicker;
-
 import org.controlsfx.dialog.Dialogs;
-
 import wfx8.model.WorkingDay;
 import wfx8.model.WorktimerConfig;
 import wfx8.util.ReadWriteException;
 import wfx8.util.WorktimerConfigHelper;
+
+import java.io.IOException;
+import java.net.URL;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ResourceBundle;
 
 public final class ConfigDialog extends Stage implements Initializable {
 
@@ -46,8 +44,8 @@ public final class ConfigDialog extends Stage implements Initializable {
     
     private void setPosition() throws ReadWriteException {
         WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
-        setX(config.stageX);
-        setY(config.stageY + 120);
+        setX(config.stageConfig.x);
+        setY(config.stageConfig.y + 120);
     }
 
     private void loadStageContent() {

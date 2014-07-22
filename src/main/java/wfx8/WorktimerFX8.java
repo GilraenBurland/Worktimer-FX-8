@@ -1,7 +1,5 @@
 package wfx8;
 
-import java.net.URL;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,6 +8,8 @@ import javafx.stage.Stage;
 import wfx8.model.WorktimerConfig;
 import wfx8.presenter.WorktimerPresenter;
 import wfx8.util.WorktimerConfigHelper;
+
+import java.net.URL;
 
 public final class WorktimerFX8 extends Application {
 
@@ -26,8 +26,8 @@ public final class WorktimerFX8 extends Application {
 
     public void setStageCoordinates() throws Exception {
         WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
-        primaryStage.setX(config.stageX);
-        primaryStage.setY(config.stageY);
+        primaryStage.setX(config.stageConfig.x);
+        primaryStage.setY(config.stageConfig.y);
     }
     
     private void addStageCoordinatesListener() {
@@ -44,7 +44,7 @@ public final class WorktimerFX8 extends Application {
             primaryStage.setScene(new Scene(worktimerView));
 
             WorktimerPresenter presenter = loader.getController();
-            primaryStage.setOnCloseRequest(new OnCloseHandler(presenter, primaryStage));
+            primaryStage.setOnCloseRequest(new OnCloseHandler(presenter));
 
             presenter.go(primaryStage);
         } catch (Exception e) {
@@ -55,8 +55,8 @@ public final class WorktimerFX8 extends Application {
     private void saveCurrentStageCoordinates() {
         try {
             WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
-            config.stageX = primaryStage.getX();
-            config.stageY = primaryStage.getY();
+            config.stageConfig.x = primaryStage.getX();
+            config.stageConfig.y = primaryStage.getY();
             WorktimerConfigHelper.saveConfig(config);
         } catch (Exception e) {
             throw new RuntimeException(e);

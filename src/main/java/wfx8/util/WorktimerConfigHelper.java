@@ -1,5 +1,7 @@
 package wfx8.util;
 
+import wfx8.model.WorktimerConfig;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,11 +9,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-
-import wfx8.model.WorktimerConfig;
 
 public final class WorktimerConfigHelper {
 
@@ -26,8 +29,12 @@ public final class WorktimerConfigHelper {
             Properties configProperties = readPropertiesFrom(worktimerConfigFile);
 
             currentConfig = new WorktimerConfig();
-            currentConfig.stageX = Double.valueOf((String) configProperties.get("stageX"));
-            currentConfig.stageY = Double.valueOf((String) configProperties.get("stageY"));
+            currentConfig.stageConfig.x = Double.valueOf((String) configProperties.get("stageX"));
+            currentConfig.stageConfig.y = Double.valueOf((String) configProperties.get("stageY"));
+            currentConfig.workingDayConfig.generalOffset =
+                    Duration.parse((String) configProperties.get("generalOffset"));
+            currentConfig.workingDayConfig.workingTime = Duration.parse((String) configProperties.get("workingTime"));
+            currentConfig.workingDayConfig.breakTime = Duration.parse((String) configProperties.get("breakTime"));
         }
         return currentConfig;
     }
@@ -51,6 +58,12 @@ public final class WorktimerConfigHelper {
                 bufferedWriter.append("stageX=0.0");
                 bufferedWriter.newLine();
                 bufferedWriter.append("stageY=0.0");
+                bufferedWriter.newLine();
+                bufferedWriter.write("generalOffset=" + Duration.ZERO);
+                bufferedWriter.newLine();
+                bufferedWriter.write("workingTime=" + Duration.ofHours(7).plusMinutes(36));
+                bufferedWriter.newLine();
+                bufferedWriter.write("breakTime=" + Duration.ofMinutes(45));
             }
         } catch (IOException e) {
             throw new ReadWriteException(e.getMessage());
@@ -75,7 +88,7 @@ public final class WorktimerConfigHelper {
         try {
             FileReader fileReader = new FileReader(file);
             try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-                String line = null;
+                String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] property = line.split("=");
                     properties.put(property[0], property[1]);
@@ -89,16 +102,16 @@ public final class WorktimerConfigHelper {
     }
 
     public static void saveConfig(WorktimerConfig config) throws Exception {
-        Properties configProperties = convertToProperties(config);
+        Map<String, String> configProperties = convertToProperties(config);
         try {
             FileWriter fileWriter = new FileWriter(getConfigFile());
             try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-                Iterator<Entry<Object, Object>> it = configProperties.entrySet().iterator();
+                Iterator<Entry<String, String>> it = configProperties.entrySet().iterator();
 
                 while (it.hasNext()) {
-                    Entry<Object, Object> entry = it.next();
+                    Entry<String, String> entry = it.next();
 
-                    bufferedWriter.append(entry.getKey() + "=" + entry.getValue());
+                    bufferedWriter.append(entry.getKey()).append("=").append(entry.getValue());
 
                     if (it.hasNext()) {
                         bufferedWriter.newLine();
@@ -110,8 +123,8 @@ public final class WorktimerConfigHelper {
         }
     }
 
-    private static final Properties convertToProperties(WorktimerConfig config) throws Exception {
-        Properties properties = new Properties();
+    private static Map<String, String> convertToProperties(WorktimerConfig config) throws Exception {
+        Map<String, String> properties = new HashMap<>();
 
         Field[] fields = WorktimerConfig.class.getFields();
 
@@ -122,9 +135,10 @@ public final class WorktimerConfigHelper {
         return properties;
     }
 
-    private static void writePropertyFrom(Field field, WorktimerConfig config, Properties properties) throws Exception {
+    private static void writePropertyFrom(Field field, WorktimerConfig config, Map<String, String> properties)
+            throws Exception {
         String fieldName = field.getName();
-        Object value = field.get(config);
+        String value = field.get(config).toString();
         properties.put(fieldName, value);
     }
 

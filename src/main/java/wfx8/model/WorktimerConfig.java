@@ -2,6 +2,7 @@ package wfx8.model;
 
 public final class WorktimerConfig {
 
-    public double stageX;
-    public double stageY;
+    public StageConfig      stageConfig      = new StageConfig();
+    public WorkingDayConfig workingDayConfig = new WorkingDayConfig();
+
 }
