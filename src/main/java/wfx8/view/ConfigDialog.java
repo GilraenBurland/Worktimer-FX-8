@@ -3,7 +3,6 @@ package wfx8.view;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
@@ -30,8 +29,12 @@ public final class ConfigDialog extends Stage implements Initializable {
 
     private final WorkingDay workingDay;
 
+    private final WorktimerConfig config;
+
     public ConfigDialog(WorkingDay workingDay) throws ReadWriteException {
         this.workingDay = workingDay;
+        this.config = WorktimerConfigHelper.getCurrentConfig();
+
         configureDialog();
         loadStageContent();
     }
@@ -43,7 +46,6 @@ public final class ConfigDialog extends Stage implements Initializable {
     }
     
     private void setPosition() throws ReadWriteException {
-        WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
         setX(config.stageConfig.x);
         setY(config.stageConfig.y + 120);
     }
@@ -56,7 +58,7 @@ public final class ConfigDialog extends Stage implements Initializable {
 
     private void trySetSceneFrom(FXMLLoader fxmlLoader) {
         try {
-            setScene(new Scene((Parent) fxmlLoader.load()));
+            setScene(new Scene(fxmlLoader.load()));
         } catch (IOException e) {
             e.printStackTrace();
             Dialogs.create().title("Error").message("Failed to open Config Dialog.").showException(e);
@@ -72,12 +74,24 @@ public final class ConfigDialog extends Stage implements Initializable {
     @FXML
     private Label           dailyOffsetLabel;
 
+    @FXML
+    private LocalTimePicker startTimeOffset;
+
+    @FXML
+    private LocalTimePicker workingTime;
+
+    @FXML
+    private LocalTimePicker breakTime;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         expandFirstTitledPane();
         initializeStartTime();
         initializeEndTime();
         calculateAndSetDailyOffset();
+        initializeStartTimeOffset();
+        initializeWorkingTime();
+        initializeBreakTime();
     }
 
     private void expandFirstTitledPane() {
@@ -138,6 +152,36 @@ public final class ConfigDialog extends Stage implements Initializable {
 
     private LocalTime getStandardEndTime() {
         return workingDay.getStartTime().toLocalTime().plus(8, ChronoUnit.HOURS).plus(21, ChronoUnit.MINUTES);
+    }
+
+    private void initializeStartTimeOffset() {
+        startTimeOffset.withLocalTime(LocalTime.MIN.plus(config.generalConfig.startTimeOffset));
+        startTimeOffset.localTimeProperty()
+               .addListener((observable, oldValue, newValue) -> doHandleStartTimeOffsetChangedEvent(newValue));
+    }
+
+    private void doHandleStartTimeOffsetChangedEvent(LocalTime newValue) {
+        config.generalConfig.startTimeOffset = Duration.between(LocalTime.MIN, newValue);
+    }
+
+    private void initializeWorkingTime() {
+        workingTime.withLocalTime(LocalTime.MIN.plus(config.generalConfig.workingTime));
+        workingTime.localTimeProperty()
+                       .addListener((observable, oldValue, newValue) -> doHandleWorkingTimeChangedEvent(newValue));
+    }
+
+    private void doHandleWorkingTimeChangedEvent(LocalTime newValue) {
+        config.generalConfig.workingTime = Duration.between(LocalTime.MIN, newValue);
+    }
+
+    private void initializeBreakTime() {
+        breakTime.withLocalTime(LocalTime.MIN.plus(config.generalConfig.breakTime));
+        breakTime.localTimeProperty()
+                   .addListener((observable, oldValue, newValue) -> doHandleBreakTimeChangedEvent(newValue));
+    }
+
+    private void doHandleBreakTimeChangedEvent(LocalTime newValue) {
+        config.generalConfig.breakTime = Duration.between(LocalTime.MIN, newValue);
     }
 
 }

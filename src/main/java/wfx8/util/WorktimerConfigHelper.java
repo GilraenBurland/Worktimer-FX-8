@@ -8,15 +8,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 public final class WorktimerConfigHelper {
+
+    private static final String STAGE_X = "stageConfig.x";
+    private static final String STAGE_Y = "stageConfig.y";
+
+    private static final String START_TIME_OFFSET = "generalConfig.startTimeOffset";
+    private static final String WORKING_TIME      = "generalConfig.workingTime";
+    private static final String BREAK_TIME        = "generalConfig.breakTime";
 
     private WorktimerConfigHelper() {
     }
@@ -26,15 +31,14 @@ public final class WorktimerConfigHelper {
     public static WorktimerConfig getCurrentConfig() throws ReadWriteException {
         if (currentConfig == null) {
             File worktimerConfigFile = getConfigFile();
-            Properties configProperties = readPropertiesFrom(worktimerConfigFile);
+            Map<String, String> configProperties = readPropertiesFrom(worktimerConfigFile);
 
             currentConfig = new WorktimerConfig();
-            currentConfig.stageConfig.x = Double.valueOf((String) configProperties.get("stageX"));
-            currentConfig.stageConfig.y = Double.valueOf((String) configProperties.get("stageY"));
-            currentConfig.workingDayConfig.generalOffset =
-                    Duration.parse((String) configProperties.get("generalOffset"));
-            currentConfig.workingDayConfig.workingTime = Duration.parse((String) configProperties.get("workingTime"));
-            currentConfig.workingDayConfig.breakTime = Duration.parse((String) configProperties.get("breakTime"));
+            currentConfig.stageConfig.x = Double.valueOf(configProperties.get(STAGE_X));
+            currentConfig.stageConfig.y = Double.valueOf(configProperties.get(STAGE_Y));
+            currentConfig.generalConfig.startTimeOffset = Duration.parse(configProperties.get(START_TIME_OFFSET));
+            currentConfig.generalConfig.workingTime = Duration.parse(configProperties.get(WORKING_TIME));
+            currentConfig.generalConfig.breakTime = Duration.parse(configProperties.get(BREAK_TIME));
         }
         return currentConfig;
     }
@@ -55,15 +59,15 @@ public final class WorktimerConfigHelper {
             FileWriter fileWriter = new FileWriter(configFile);
 
             try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-                bufferedWriter.append("stageX=0.0");
+                bufferedWriter.append(STAGE_X + "=0.0");
                 bufferedWriter.newLine();
-                bufferedWriter.append("stageY=0.0");
+                bufferedWriter.append(STAGE_Y + "=0.0");
                 bufferedWriter.newLine();
-                bufferedWriter.write("generalOffset=" + Duration.ZERO);
+                bufferedWriter.write(START_TIME_OFFSET + "=" + Duration.ZERO);
                 bufferedWriter.newLine();
-                bufferedWriter.write("workingTime=" + Duration.ofHours(7).plusMinutes(36));
+                bufferedWriter.write(WORKING_TIME + "=" + Duration.ofHours(7).plusMinutes(36));
                 bufferedWriter.newLine();
-                bufferedWriter.write("breakTime=" + Duration.ofMinutes(45));
+                bufferedWriter.write(BREAK_TIME + "=" + Duration.ofMinutes(45));
             }
         } catch (IOException e) {
             throw new ReadWriteException(e.getMessage());
@@ -82,8 +86,8 @@ public final class WorktimerConfigHelper {
         return worktimerDirectory;
     }
 
-    private static Properties readPropertiesFrom(File file) throws ReadWriteException {
-        Properties properties = new Properties();
+    private static Map<String, String> readPropertiesFrom(File file) throws ReadWriteException {
+        Map<String, String> properties = new HashMap<>();
 
         try {
             FileReader fileReader = new FileReader(file);
@@ -126,20 +130,12 @@ public final class WorktimerConfigHelper {
     private static Map<String, String> convertToProperties(WorktimerConfig config) throws Exception {
         Map<String, String> properties = new HashMap<>();
 
-        Field[] fields = WorktimerConfig.class.getFields();
-
-        for (Field field : fields) {
-            writePropertyFrom(field, config, properties);
-        }
+        properties.put("stageConfig.x", String.valueOf(config.stageConfig.x));
+        properties.put("stageConfig.y", String.valueOf(config.stageConfig.y));
+        properties.put("generalConfig.startTimeOffset", config.generalConfig.startTimeOffset.toString());
+        properties.put("generalConfig.workingTime", config.generalConfig.workingTime.toString());
+        properties.put("generalConfig.breakTime", config.generalConfig.breakTime.toString());
 
         return properties;
     }
-
-    private static void writePropertyFrom(Field field, WorktimerConfig config, Map<String, String> properties)
-            throws Exception {
-        String fieldName = field.getName();
-        String value = field.get(config).toString();
-        properties.put(fieldName, value);
-    }
-
 }
