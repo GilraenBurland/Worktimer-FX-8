@@ -8,7 +8,7 @@
 	<version>1.0.0</version>
 
 	<name>Worktimer FX 8</name>
-	
+
 	<organization>
 		<name>WFX8</name>
 	</organization>
@@ -20,6 +20,7 @@
 		<versions.commons.lang>2.6</versions.commons.lang>
 		<versions.controlsfx>8.0.6_20</versions.controlsfx>
 		<versions.findbugs>2.5.4</versions.findbugs>
+		<versions.guava>17.0</versions.guava>
 		<versions.jacoco>0.7.1.201405082137</versions.jacoco>
 		<versions.jdk>1.8</versions.jdk>
 		<versions.jfxtras>8.0-r1</versions.jfxtras>
@@ -59,6 +60,11 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${versions.commons.lang}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${versions.guava}</version>
 		</dependency>
 
 		<!-- JavaFX Extensions -->

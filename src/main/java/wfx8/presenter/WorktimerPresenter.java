@@ -1,8 +1,13 @@
 package wfx8.presenter;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -13,8 +18,7 @@ import wfx8.util.ReadWriteException;
 import wfx8.util.WorkingDayHelper;
 import wfx8.view.ConfigDialog;
 
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import com.google.common.eventbus.EventBus;
 
 public final class WorktimerPresenter {
 
@@ -28,12 +32,19 @@ public final class WorktimerPresenter {
     private Label remainingTimeLabel;
 
     private WorkingDay workingDay;
+    private EventBus eventBus;
 
     public void go(Stage primaryStage) throws ReadWriteException, InterruptedException {
         this.workingDay = WorkingDayHelper.loadWorkingDay();
+        createAndRegisterOnEventBus();
         configureLabels();
         startTimer();
         primaryStage.show();
+    }
+
+    private void createAndRegisterOnEventBus() {
+        this.eventBus = new EventBus();
+        this.eventBus.register(this);
     }
 
     private void configureLabels() {
@@ -59,13 +70,43 @@ public final class WorktimerPresenter {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
-        KeyFrame timer = new KeyFrame(javafx.util.Duration.seconds(1), new Worktimer(workingDay, remainingTimeLabel));
+        KeyFrame timer = new KeyFrame(javafx.util.Duration.seconds(1), (event) -> this.handleKeyFrame());
         timeline.getKeyFrames().add(timer);
         timeline.play();
 
         Thread.sleep(1000);
     }
 
+    public void handleKeyFrame() {
+        calculateCurrentRemainingTime();
+        setCurrentRemainingTimeInGUI();
+    }
+    
+    private LocalTime currentRemainingTime;
+    private boolean   nowIsOvertime;
+    
+    private void calculateCurrentRemainingTime() {
+        LocalTime endTime = workingDay.getEndTime();
+        Duration remainingDuration = Duration.between(LocalTime.now(), endTime);
+        if (remainingDuration.isNegative()) {
+            nowIsOvertime = true;
+            currentRemainingTime = LocalTime.MIN.minus(remainingDuration);
+        } else {
+            nowIsOvertime = false;
+            currentRemainingTime = LocalTime.MIN.plus(remainingDuration);
+        }
+    }
+
+    private void setCurrentRemainingTimeInGUI() {
+        Platform.runLater(() -> {
+            if (nowIsOvertime) {
+                remainingTimeLabel.setText("+" + DateTimeUtil.formatRemainingTime(currentRemainingTime));
+            } else {
+                remainingTimeLabel.setText("-" + DateTimeUtil.formatRemainingTime(currentRemainingTime));
+            }
+        });
+    }
+    
     public WorkingDay getWorkingDay() {
         return this.workingDay;
     }
@@ -75,4 +116,5 @@ public final class WorktimerPresenter {
         ConfigDialog dialog = new ConfigDialog(workingDay);
         dialog.showAndWait();
     }
+    
 }
