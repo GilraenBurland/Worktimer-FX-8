@@ -2,7 +2,9 @@ package wfx8;
 
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
+
 import org.controlsfx.dialog.Dialogs;
+
 import wfx8.model.WorkingDay;
 import wfx8.model.WorktimerConfig;
 import wfx8.presenter.WorktimerPresenter;
@@ -34,7 +36,7 @@ public final class OnCloseHandler implements EventHandler<WindowEvent> {
         WorkingDayHelper.serialize(workingDay);
     }
 
-    private void saveConfiguration() throws Exception {
+    private static void saveConfiguration() throws Exception {
         WorktimerConfig config = WorktimerConfigHelper.getCurrentConfig();
         WorktimerConfigHelper.saveConfig(config);
     }

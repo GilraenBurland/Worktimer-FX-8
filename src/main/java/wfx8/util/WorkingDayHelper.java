@@ -65,7 +65,7 @@ public final class WorkingDayHelper {
 
     private static WorkingDay createNewWorkingDay() throws ReadWriteException {
         GeneralConfig generalConfig = WorktimerConfigHelper.getCurrentConfig().generalConfig;
-        ZonedDateTime startTime = ZonedDateTime.now().plus(generalConfig.startTimeOffset);
+        ZonedDateTime startTime = ZonedDateTime.now().minus(generalConfig.startTimeOffset);
         LocalTime endTime = startTime.toLocalTime().plus(generalConfig.workingTime).plus(generalConfig.breakTime);
         return new WorkingDay(startTime, endTime);
     }
